@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Component } from 'react'
 import './App.css';
 function CityInput(props){
@@ -8,29 +9,41 @@ function CityInput(props){
     </div>
   )
 }
-function City(props){
+function City(props) {
+  console.log(props.data);
   return (
     <div className="item">
-      City: {props.code}
+      <p> props.data.City </p>
     </div>
   )
 }
+
+
 export default class App extends Component {
   state= {
     city: "",
-    zipCodes: []
+    zipCodes: [],
+    data: []
   }
   updateCity = async (e) => {
     await this.setState({ city: e.target.value });
     await this.updateZipCodes();
   }
   updateZipCodes = async () => {
-    console.clear(); //clears screen to remove unwanted 404 errors when typing
+    // console.clear(); //clears screen to remove unwanted 404 errors when typing
     await fetch(`http://ctp-zip-api.herokuapp.com/city/${this.state.city.toUpperCase()}`)
       .then(async res => await res.json())
       .then(async data => await this.setState({ zipCodes: data }))
-      .catch(error => {
-        console.log("Not a city..")
+      .catch(async() => {
+        await this.setState({ zipCodes: [] })
+      })
+  }
+  getZipData = async (zip) => {
+    await fetch(`http://ctp-zip-api.herokuapp.com/zip/${zip}`)
+      .then(async res => await res.json())
+      .then(async data => await this.setState({ data: data}))
+      .catch(async() => {
+        await this.setState({ data: [] })
       })
   }
   render() {
@@ -45,7 +58,10 @@ export default class App extends Component {
           
           {
             this.state.zipCodes.length > 0 ?
-                this.state.zipCodes.map(item => <li key={item}><City code={item}/></li>)
+                this.state.zipCodes.map(item => {
+                  // this.getZipData(item);
+                  return <li key={item}><City data={this.state.data}/></li>
+                })
                 :
                 <li id="none">No Results</li>
           }
