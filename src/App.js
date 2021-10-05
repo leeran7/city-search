@@ -10,10 +10,9 @@ function CityInput(props){
   )
 }
 function City(props) {
-  console.log(props.data);
   return (
     <div className="item">
-      <p> props.data.City </p>
+      <p> {props.data}</p>
     </div>
   )
 }
@@ -38,14 +37,14 @@ export default class App extends Component {
         await this.setState({ zipCodes: [] })
       })
   }
-  getZipData = async (zip) => {
-    await fetch(`http://ctp-zip-api.herokuapp.com/zip/${zip}`)
-      .then(async res => await res.json())
-      .then(async data => await this.setState({ data: data}))
-      .catch(async() => {
-        await this.setState({ data: [] })
-      })
-  }
+  // getZipData = async (zip) => {
+  //   await fetch(`http://ctp-zip-api.herokuapp.com/zip/${zip}`)
+  //     .then(async res => await res.json())
+  //     .then(async data => await this.setState({ data: data}))
+  //     .catch(async() => {
+  //       await this.setState({ data: [] })
+  //     })
+  // }
   render() {
     return (
       <div className="App">
@@ -58,10 +57,7 @@ export default class App extends Component {
           
           {
             this.state.zipCodes.length > 0 ?
-                this.state.zipCodes.map(item => {
-                  // this.getZipData(item);
-                  return <li key={item}><City data={this.state.data}/></li>
-                })
+                this.state.zipCodes.map(item =>  <li key={item}><City data={item}/></li>)
                 :
                 <li id="none">No Results</li>
           }
